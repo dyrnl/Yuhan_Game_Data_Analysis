@@ -4,17 +4,19 @@
 
 using namespace std;
 
-class Professor {
+class Professor 
+{
 private:
-    int money;
-    int upgradeLevel;
-    int value;
-    int cost;
+    int money;  // 돈
+    int upgradeLevel;   // 강화 단계
+    int value;  // 교수님의 강의력
+    int cost; // 돈 비교용 변수
 
 public:
     Professor() : money(300), upgradeLevel(0), value(0), cost(0) {}
 
-    void upgrade() {
+    void upgrade()
+    {
         srand(time(0));
         int chance = rand() % 100 + 1;
 
@@ -70,6 +72,15 @@ public:
         value = 0;
         upgradeLevel = 0;
     }
+    void setMoney(int newMoney)
+    {
+        money = newMoney;
+    }
+    
+    int getMoney() const 
+    {
+        return money;
+    }
 
     int getUpgradeLevel() const 
     {
@@ -79,11 +90,6 @@ public:
     int getValue() const 
     {
         return value;
-    }
-
-    int getMoney() const 
-    {
-        return money;
     }
 
     int getCost() const
@@ -114,6 +120,13 @@ int main() {
                 myProfessor.upgrade();
             else
                 cout << "\n돈이 부족합니다." << endl;
+        }
+        else if (choice == 'p' || choice == 'P')
+        {
+            int currentMoney = myProfessor.getMoney();
+            currentMoney += 1000;
+            myProfessor.setMoney(currentMoney);
+            cout << "\n1000원이 추가되었습니다. 현재 돈 : " << myProfessor.getMoney() << "원" << endl;
         }
         else if (choice == 's' || choice == 'S')
             myProfessor.sell();
