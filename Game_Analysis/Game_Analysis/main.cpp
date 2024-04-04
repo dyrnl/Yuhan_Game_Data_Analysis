@@ -98,7 +98,8 @@ public:
     }
 };
 
-int main() {
+int main() 
+{
     Professor myProfessor;
     cout << "교수님을 최강의 교수님으로!" << endl;
     cout << "Y(강화), S(판매), N(게임 종료)" << endl;
