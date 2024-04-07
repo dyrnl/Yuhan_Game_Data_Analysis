@@ -1,8 +1,9 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
-
 using namespace std;
+
+int chance = rand() % 100 + 1;
 
 class Professor 
 {
@@ -18,7 +19,6 @@ public:
     void upgrade()
     {
         srand(time(0));
-        int chance = rand() % 100 + 1;
 
         if (chance <= (90 - upgradeLevel * 2) && upgradeLevel <= 25 && upgradeLevel >= 0)
         {
@@ -62,6 +62,15 @@ public:
             value = 0;
             cout << "\n±³¼ö´Ô ÆÄ±«. ³²Àº µ· : " << money << endl;
         }
+    }
+
+    void professorBreak()
+    {
+        chance = 0;
+        upgradeLevel = 0;
+        money -= 100;
+        value = 0;
+        cout << "\n±³¼ö´Ô ÆÄ±«. ³²Àº µ· : " << money << endl;       
     }
 
     void sell()
@@ -131,9 +140,11 @@ int main()
         }
         else if (choice == 's' || choice == 'S')
             myProfessor.sell();
+        else if (choice == 'b' || choice == 'B')
+            myProfessor.professorBreak();
         else if (choice == 'n' || choice == 'N')
             break;
-
+            
         if (myProfessor.getUpgradeLevel() == 25)
         {
             cout << "°ÔÀÓ Å¬¸®¾î" << endl;
