@@ -1,7 +1,13 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <string>
+#include <chrono>
+#include <thread>
+#include <Windows.h>
+
 using namespace std;
+
 
 int chance = rand() % 100 + 1;
 
@@ -11,16 +17,17 @@ private:
     int money;  // 돈
     int upgradeLevel;   // 강화 단계
     int value;  // 교수님의 강의력
-    int cost; // 돈 비교용 변수
+    int cost;   // 돈 비교용 변수
 
 public:
-    Professor() : money(300), upgradeLevel(0), value(0), cost(0) {}
+    Professor() : money(500), upgradeLevel(0), value(0), cost(0) { }
 
     void upgrade()
     {
         srand(time(0));
+        stringBuffer("강화 중...");
 
-        if (chance <= (90 - upgradeLevel * 2) && upgradeLevel <= 25 && upgradeLevel >= 0)
+        if (chance <= (90 - upgradeLevel * 5) && upgradeLevel <= 20 && upgradeLevel >= 0)
         {
             if (upgradeLevel >= 0 && upgradeLevel <= 4) 
             {
@@ -40,27 +47,20 @@ public:
                 money -= 40;
                 value += 80;
             }
-            else if (upgradeLevel >= 15 && upgradeLevel <= 19) 
+            else if (upgradeLevel >= 15 && upgradeLevel <= 20) 
             {
                 cost = 80;
                 money -= 80;
                 value += 160;
             }
-            else if (upgradeLevel >= 20 && upgradeLevel <= 25) 
-            {
-                cost = 160;
-                money -= 160;
-                value += 320;
-            }
             upgradeLevel++;
-            cout << "\n교수님 강화 성공. 현재 강의력 : " << value << ", 현재 돈 : " << money << "원" << endl;
+            stringBuffer("강화 성공!");
         }
         else 
         {
             upgradeLevel = 0;
             money -= 100;
             value = 0;
-            cout << "\n교수님 파괴. 남은 돈 : " << money << endl;
         }
     }
 
@@ -70,16 +70,23 @@ public:
         upgradeLevel = 0;
         money -= 100;
         value = 0;
-        cout << "\n교수님 파괴. 남은 돈 : " << money << endl;       
+        stringBuffer("강화 중...");
+        stringBuffer("강화 실패!");
+        stringBuffer("교수님 파괴!");
     }
 
     void sell()
     {
-        cout << "\n교수님의 강의력을 판매하여 " << value << "원을 얻었습니다 " << endl;
+        stringBuffer("교수님 판매!");
+        cout << "교수님의 강의력을 판매하여 " << value << "원을 얻었습니다 " << endl;
         money += value;
-        cout << "현재 돈 : " << money << "원" << endl;
         value = 0;
         upgradeLevel = 0;
+
+        if (value == 0)
+        {
+            stringBuffer("교수님 판매 실패!");
+        }
     }
     void setMoney(int newMoney)
     {
@@ -105,6 +112,27 @@ public:
     {
         return cost;
     }
+
+    void stringBuffer(const char* string)
+    {
+        system("cls");
+        CursorView(false, 1);
+        for (int i = 0; i < strlen(string); i++)
+        {
+            cout << string[i];
+            this_thread::sleep_for(chrono::milliseconds(100));
+        }
+        this_thread::sleep_for(chrono::milliseconds(1000));
+        system("cls");
+    }
+
+    void CursorView(bool visible, DWORD size)
+    {
+        CONSOLE_CURSOR_INFO cursorInfo;
+        cursorInfo.dwSize = size;
+        cursorInfo.bVisible = visible;
+        SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+    }
 };
 
 int main() 
@@ -117,8 +145,9 @@ int main()
 
     while (choice && myProfessor.getMoney() >= 0)
     {
+        myProfessor.CursorView(true, 1);
         cout << "강화 레벨 : " << myProfessor.getUpgradeLevel() << endl;
-        cout << "강화 확률 : " << (90 - myProfessor.getUpgradeLevel() * 2) << "%" << endl;
+        cout << "강화 확률 : " << (90 - myProfessor.getUpgradeLevel() * 5) << "%" << endl;
         cout << "현재 강의력 : " << myProfessor.getValue() << endl;
         cout << "현재 돈 : " << myProfessor.getMoney() << "원" << endl;
         cout << "교수님을 강화하시겠습니까? (Y/S/N) : ";
