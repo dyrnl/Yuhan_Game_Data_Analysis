@@ -8,56 +8,59 @@
 
 using namespace std;
 
-
-int chance = rand() % 100 + 1;
-
-class Professor 
+class Professor
 {
 private:
     int money;  // 돈
     int upgradeLevel;   // 강화 단계
     int value;  // 교수님의 강의력
     int cost;   // 돈 비교용 변수
+    int chance; // 강화 확률
 
 public:
-    Professor() : money(500), upgradeLevel(0), value(0), cost(0) { }
+    Professor() : money(10000), upgradeLevel(0), value(0), cost(0), chance(0) { }
+
+    bool IsUpgrade() const
+    {
+        return (chance <= 90 - upgradeLevel * 5 && upgradeLevel <= 20 && upgradeLevel >= 0);
+    }
 
     void upgrade()
     {
-        srand(time(0));
-        stringBuffer("강화 중...");
-
-        if (chance <= (90 - upgradeLevel * 5) && upgradeLevel <= 20 && upgradeLevel >= 0)
+        if (IsUpgrade())
         {
-            if (upgradeLevel >= 0 && upgradeLevel <= 4) 
+            // 강화 성공
+            if (upgradeLevel >= 0 && upgradeLevel <= 4)
             {
                 cost = 10;
                 money -= 10;
                 value += 20;
             }
-            else if (upgradeLevel >= 5 && upgradeLevel <= 9) 
+            else if (upgradeLevel >= 5 && upgradeLevel <= 9)
             {
                 cost = 20;
                 money -= 20;
                 value += 40;
             }
-            else if (upgradeLevel >= 10 && upgradeLevel <= 14) 
+            else if (upgradeLevel >= 10 && upgradeLevel <= 14)
             {
                 cost = 40;
                 money -= 40;
                 value += 80;
             }
-            else if (upgradeLevel >= 15 && upgradeLevel <= 20) 
+            else if (upgradeLevel >= 15 && upgradeLevel <= 20)
             {
                 cost = 80;
                 money -= 80;
                 value += 160;
             }
             upgradeLevel++;
-            stringBuffer("강화 성공!");
+            chance -= 5; // 강화 성공할 때마다 5%씩 감소
         }
-        else 
+        else
         {
+            // 강화 실패
+            chance = 90; // 강화 실패 시 90%로 초기화
             upgradeLevel = 0;
             money -= 100;
             value = 0;
@@ -66,7 +69,7 @@ public:
 
     void professorBreak()
     {
-        chance = 0;
+        chance = 90;
         upgradeLevel = 0;
         money -= 100;
         value = 0;
@@ -111,6 +114,11 @@ public:
     int getCost() const
     {
         return cost;
+    }
+
+    int getChance() const
+    {
+        return chance;
     }
 
     void stringBuffer(const char* string)
@@ -174,7 +182,7 @@ int main()
         else if (choice == 'n' || choice == 'N')
             break;
             
-        if (myProfessor.getUpgradeLevel() == 25)
+        if (myProfessor.getUpgradeLevel() == 20)
         {
             cout << "게임 클리어" << endl;
             break;
